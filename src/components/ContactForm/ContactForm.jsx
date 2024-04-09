@@ -1,19 +1,24 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useId } from "react";
-import * as Yup from "yup";
-import { useDispatch } from "react-redux";
-import css from "./ContactForm.module.css";
-import { addContact } from "../../redux/contactsOps";
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { useId } from 'react';
+import { useDispatch } from 'react-redux';
+import css from './ContactForm.module.css';
+import { addContact } from '../../redux/contacts/operations';
+import * as Yup from 'yup';
 
 export default function ContactForm() {
   const nameFieldId = useId();
   const numberFieldId = useId();
-
   const dispatch = useDispatch();
 
-  const validationSchema = Yup.object({
-    name: Yup.string().required("Name is required"),
-    number: Yup.string().required("Number is required"),
+  const userSchema = Yup.object().shape({
+    name: Yup.string()
+      .min(3, 'Too short!')
+      .max(50, 'Too long!')
+      .required('Required'),
+    number: Yup.string()
+      .min(3, 'Too short!')
+      .max(50, 'Too long!')
+      .required('Required'),
   });
 
   const handleAdd = (values, actions) => {
@@ -23,20 +28,24 @@ export default function ContactForm() {
   };
   return (
     <Formik
-      initialValues={{ name: "", number: "" }}
+      initialValues={{ name: '', number: '' }}
       onSubmit={handleAdd}
-      validationSchema={validationSchema}
+      validationSchema={userSchema}
     >
       <Form className={css.form}>
         <div className={css.field}>
-          <label htmlFor={nameFieldId}>Name:</label>
+          <label htmlFor={nameFieldId}>Name</label>
           <Field type="text" name="name" id={nameFieldId} />
-          <ErrorMessage name="name" component="div" className={css.error} />
+          <ErrorMessage name="name" component="span" style={{ color: 'red' }} />
         </div>
         <div className={css.field}>
-          <label htmlFor={numberFieldId}>Number:</label>
+          <label htmlFor={numberFieldId}>Number</label>
           <Field type="text" name="number" id={numberFieldId} />
-          <ErrorMessage name="number" component="div" className={css.error} />
+          <ErrorMessage
+            name="number"
+            component="span"
+            style={{ color: 'red' }}
+          />
         </div>
         <button type="submit" className={css.btn}>
           Add contact
