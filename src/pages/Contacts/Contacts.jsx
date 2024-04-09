@@ -6,7 +6,7 @@ import SearchBox from '../../components/SearchBox/SearchBox';
 export default function Contacts() {
   return (
     <div>
-      <PageTitle>Your contacts</PageTitle>
+      <PageTitle>Your contacts:</PageTitle>
       <ContactForm />
       <SearchBox />
       <ContactList />
