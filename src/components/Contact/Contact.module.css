@@ -1,10 +1,33 @@
-.box {
+.contact {
   display: flex;
+  flex-direction: row;
+  padding: 20px;
   justify-content: space-between;
+  border: 1px solid black;
+  background: rgb(26, 197, 26);
+  border-radius: 8px;
+  /* width: 500px; */
 }
 
-.icon {
-  margin-right: 10px;
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.name,
+.phone {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+  padding-right: 8px;
+}
+
+.buttonsGroupe {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .button {

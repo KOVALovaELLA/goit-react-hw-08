@@ -1,5 +1,6 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { toast } from 'react-hot-toast';
 
 axios.defaults.baseURL = 'https://connections-api.herokuapp.com';
 
@@ -24,20 +25,22 @@ export const register = createAsyncThunk(
   }
 );
 
-export const logIn = createAsyncThunk(
-  'auth/logIn',
+export const login = createAsyncThunk(
+  'auth/login',
   async (userInfo, thunkAPI) => {
     try {
+      console.log(userInfo);
       const response = await axios.post('/users/login', userInfo);
       setAuthHeader(response.data.token);
       return response.data;
     } catch (error) {
+      toast.error('Invalid email or password, try again or register');
       return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
 
-export const logOut = createAsyncThunk('auth/logOut', async (_, thunkAPI) => {
+export const logout = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
   try {
     await axios.post('/users/logout');
     clearAuthHeader();
@@ -49,17 +52,22 @@ export const logOut = createAsyncThunk('auth/logOut', async (_, thunkAPI) => {
 export const refreshUser = createAsyncThunk(
   'auth/refresh',
   async (_, thunkAPI) => {
-    const reduxState = thunkAPI.getState();
-    const savedToken = reduxState.auth.token;
-    setAuthHeader(savedToken);
+    const {
+      auth: { token },
+    } = thunkAPI.getState();
+
+    setAuthHeader(token);
     const response = await axios.get('/users/current');
+
     return response.data;
   },
   {
     condition: (_, { getState }) => {
-      const reduxState = getState();
-      const savedToken = reduxState.auth.token;
-      return savedToken !== null;
+      const {
+        auth: { token },
+      } = getState();
+
+      return token != null;
     },
   }
 );

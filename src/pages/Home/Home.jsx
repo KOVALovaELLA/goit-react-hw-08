@@ -1,10 +1,9 @@
 import PageTitle from '../../components/PageTitle/PageTitle';
-import css from './Home.module.css';
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <div className={css.container}>
-      <PageTitle>Welcome!!!</PageTitle>
+    <div>
+      <PageTitle>Phonebook</PageTitle>
     </div>
   );
 }

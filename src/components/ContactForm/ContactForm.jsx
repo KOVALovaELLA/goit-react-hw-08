@@ -1,53 +1,62 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { useId } from 'react';
-import { useDispatch } from 'react-redux';
-import css from './ContactForm.module.css';
-import { addContact } from '../../redux/contacts/operations';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
+import { ErrorMessage } from 'formik';
+import { nanoid } from 'nanoid';
+import { useDispatch } from 'react-redux';
+import { addContact } from '../../redux/contacts/operations';
+import css from './ContactForm.module.css';
+
+const ContactSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(3, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
+  number: Yup.string()
+    .min(3, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
+});
+
+const initialValues = {
+  name: '',
+  number: '',
+};
 
 export default function ContactForm() {
-  const nameFieldId = useId();
-  const numberFieldId = useId();
+  const nameFieldId = nanoid();
+  const numberFieldId = nanoid();
   const dispatch = useDispatch();
 
-  const userSchema = Yup.object().shape({
-    name: Yup.string()
-      .min(3, 'Too short!')
-      .max(50, 'Too long!')
-      .required('Required'),
-    number: Yup.string()
-      .min(3, 'Too short!')
-      .max(50, 'Too long!')
-      .required('Required'),
-  });
+  const handleSubmit = (values, actions) => {
+    dispatch(
+      addContact({
+        name: values.name,
+        number: values.number,
+      })
+    );
 
-  const handleAdd = (values, actions) => {
-    const { name, number } = values;
-    dispatch(addContact({ name, number }));
     actions.resetForm();
   };
+
   return (
     <Formik
-      initialValues={{ name: '', number: '' }}
-      onSubmit={handleAdd}
-      validationSchema={userSchema}
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validationSchema={ContactSchema}
     >
       <Form className={css.form}>
         <div className={css.field}>
           <label htmlFor={nameFieldId}>Name</label>
           <Field type="text" name="name" id={nameFieldId} />
-          <ErrorMessage name="name" component="span" style={{ color: 'red' }} />
+          <ErrorMessage className={css.error} name="name" component="span" />
         </div>
+
         <div className={css.field}>
           <label htmlFor={numberFieldId}>Number</label>
           <Field type="text" name="number" id={numberFieldId} />
-          <ErrorMessage
-            name="number"
-            component="span"
-            style={{ color: 'red' }}
-          />
+          <ErrorMessage className={css.error} name="number" component="span" />
         </div>
-        <button type="submit" className={css.btn}>
+        <button className={css.button} type="submit">
           Add contact
         </button>
       </Form>

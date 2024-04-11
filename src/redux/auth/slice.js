@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { logIn, logOut, register, refreshUser } from './operations';
+import { login, register, refreshUser, logout } from './operations';
 
 const authSlice = createSlice({
   name: 'auth',
@@ -10,17 +10,15 @@ const authSlice = createSlice({
     },
     token: null,
     isLoggedIn: false,
-    loading: false,
-    error: null,
     isRefreshing: false,
   },
   extraReducers: builder =>
     builder
       .addCase(register.pending, state => {
+        state.error = false;
         state.loading = true;
       })
       .addCase(register.fulfilled, (state, action) => {
-        state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isLoggedIn = true;
@@ -29,24 +27,24 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = true;
       })
-      .addCase(logIn.pending, state => {
+      .addCase(login.pending, state => {
+        state.error = false;
         state.loading = true;
       })
-      .addCase(logIn.fulfilled, (state, action) => {
-        state.loading = false;
+      .addCase(login.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isLoggedIn = true;
       })
-      .addCase(logIn.rejected, state => {
+      .addCase(login.rejected, state => {
         state.loading = false;
         state.error = true;
       })
-      .addCase(logOut.pending, state => {
+      .addCase(logout.pending, state => {
+        state.error = false;
         state.loading = true;
       })
-      .addCase(logOut.fulfilled, state => {
-        state.loading = false;
+      .addCase(logout.fulfilled, state => {
         state.user = {
           name: null,
           email: null,
@@ -54,7 +52,7 @@ const authSlice = createSlice({
         state.token = null;
         state.isLoggedIn = false;
       })
-      .addCase(logOut.rejected, state => {
+      .addCase(logout.rejected, state => {
         state.loading = false;
         state.error = true;
       })
@@ -67,9 +65,9 @@ const authSlice = createSlice({
         state.isRefreshing = false;
       })
       .addCase(refreshUser.rejected, state => {
-        state.isRefreshing = false;
+        state.loading = false;
         state.error = true;
       }),
 });
 
-export default authSlice.reducer;
+export const authReducer = authSlice.reducer;
