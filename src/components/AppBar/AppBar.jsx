@@ -1,21 +1,25 @@
-import Navigation from '../Navigation/Navigation';
-import UserMenu from '../UserMenu/UserMenu';
-import AuthNav from '../AuthNav/AuthNav';
-import css from './AppBar.module.css';
-import { useSelector } from 'react-redux';
-import {
-  selectIsLoggedIn,
-  selectIsRefreshing,
-} from '../../redux/auth/selectors';
+import { useSelector } from "react-redux";
+import AuthNav from "../AuthNav/AuthNav";
+import Navigation from "../Navigation/Navigation";
+import css from "./AppBar.module.css";
+import { selectIsLoggedIn } from "../../redux/auth/selectors";
+import UserMenu from "../UserMenu/UserMenu";
 
 export default function AppBar() {
   const isLoggedIn = useSelector(selectIsLoggedIn);
-  const isRefreshing = useSelector(selectIsRefreshing);
-
   return (
-    <header className={css.header}>
-      <Navigation />
-      {!isRefreshing && <div>{isLoggedIn ? <UserMenu /> : <AuthNav />}</div>}
-    </header>
+    <div>
+      <h1 className={css.title}>Phonebook</h1>
+      <div className={css.div}>
+        <Navigation className={css.link}></Navigation>
+        {isLoggedIn ? (
+          <UserMenu></UserMenu>
+        ) : (
+          <AuthNav className={css.link}></AuthNav>
+        )}
+      </div>
+    </div>
   );
 }
+
+// Обов'язково очищайте колекцію контактів у стані при логауті користувача.

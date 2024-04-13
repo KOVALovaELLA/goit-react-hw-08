@@ -1,65 +1,47 @@
-import { useState } from 'react';
-import { FaUser } from 'react-icons/fa';
-import { FaPhoneAlt } from 'react-icons/fa';
-import DeleteModal from '../DeleteModal/DeleteModal';
-import EditModal from '../EditModal/EditModal';
-import css from './Contact.module.css';
+import css from "./Contact.module.css";
+import { BsPersonHearts } from "react-icons/bs";
+import { FaPhoneSquareAlt } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { deleteContact } from "../../redux/contacts/operations";
+import toast from "react-hot-toast";
 
-export default function Contact({ data: { id, name, number } }) {
-  const [editModal, setEditModal] = useState(false);
-  const [deleteModal, setDeleteModal] = useState(false);
-
-  const openEditModal = () => {
-    setEditModal(true);
-  };
-  const closeEditModal = () => {
-    setEditModal(false);
-  };
-  const openDeleteModal = () => {
-    setDeleteModal(true);
-  };
-  const closeDeleteModal = () => {
-    setDeleteModal(false);
-  };
+export default function Contact({ data }) {
+  const dispatch = useDispatch();
 
   return (
     <div className={css.contact}>
-      <div className={css.container}>
-        <div className={css.name}>
-          <FaUser />
-          <p>{name}</p>
+      <div>
+        <div className={css.container}>
+          <BsPersonHearts /> {data.name}
+          <h1 className={css.text}></h1>
         </div>
-        <div className={css.phone}>
-          <FaPhoneAlt />
-          <p>{number}</p>
+
+        <div className={css.container}>
+          <FaPhoneSquareAlt />
+          <p className={css.text}>{data.number}</p>
         </div>
       </div>
 
-      <div className={css.buttonsGroupe}>
-        <button className={css.button} onClick={openEditModal}>
-          Edit
-        </button>
-        <button className={css.button} onClick={openDeleteModal}>
-          Delete
-        </button>
-      </div>
-      {editModal && (
-        <EditModal
-          isOpen={openEditModal}
-          id={id}
-          name={name}
-          number={number}
-          onClose={closeEditModal}
-        />
-      )}
-      {deleteModal && (
-        <DeleteModal
-          isOpen={openDeleteModal}
-          id={id}
-          name={name}
-          onClose={closeDeleteModal}
-        />
-      )}
+      <button
+        onClick={() =>
+          dispatch(deleteContact(data.id))
+            .unwrap()
+            .then(() => {
+              toast(
+                "The contact has been successfully removed from the list!",
+                {
+                  icon: "📵",
+                }
+              );
+              // toast.success(
+              //   "The contact has been successfully removed from the list!"
+              // );
+            })
+        }
+        className={css.button}
+      >
+        Delete
+      </button>
     </div>
   );
 }

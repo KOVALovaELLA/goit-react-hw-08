@@ -1,7 +1,10 @@
-.searchbox {
-  padding: 8px 0;
+.input {
+  border-radius: 5px;
+  width: 250px;
 }
 
-.input {
-  width: 360px;
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
